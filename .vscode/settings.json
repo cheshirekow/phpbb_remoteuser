@@ -1,0 +1,7 @@
+{
+  "editor.tabSize": 4,
+  "phpfmt.indent_with_space": false,
+  "phpfmt.passes": [
+      "AllmanStyleBraces",
+  ]
+}

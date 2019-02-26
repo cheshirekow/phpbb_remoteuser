@@ -1,0 +1,27 @@
+{
+  "name": "cheshirekow/remoteuserauth",
+  "type": "phpbb-extension",
+  "description": "Authentication using Remote User Token provided by reverse proxy",
+  "homepage": "https://github.com/cheshirekow/phpbb_rut",
+  "version": "0.1.0",
+  "time": "2019-02-22",
+  "license": "GPL-2.0-only",
+  "authors": [
+    {
+      "name": "Josh Bialkowski",
+      "email": "josh.bialkowski@gmail.com",
+      "homepage": "https://github.com/cheshirekow",
+      "role": ""
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "composer/installers": "~1.0"
+  },
+  "extra": {
+    "display-name": "Remote User Authentication",
+    "soft-require": {
+      "phpbb/phpbb": ">=3.2.0,<3.3.0@dev"
+    }
+  }
+}

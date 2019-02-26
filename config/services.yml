@@ -1,0 +1,14 @@
+services:
+    auth.provider.remoteuser:
+        class: cheshirekow\remoteuserauth\provider
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@passwords.manager'
+            - '@request'
+            - '@user'
+            - '@service_container'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+        tags:
+            - { name: auth.provider }

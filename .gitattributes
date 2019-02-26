@@ -1,0 +1,8 @@
+.gitattributes export-ignore
+.travis.yml export-eignore
+.vscode export-ignore
+doc/nginx-fg.cfg export-ignore
+doc/php-fpm.conf export-ignore
+phpunit.xml export-ignore
+tests/ export-ignore
+travis/ export-ignore
