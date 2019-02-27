@@ -50,6 +50,7 @@ class remoteuserauth_provider_test extends phpbb_database_test_case
 		$this->provider = new \cheshirekow\remoteuserauth\provider(
 			$db, $config, $passwords_manager, $this->request, $this->user,
 			$phpbb_container, $phpbb_root_path, $phpEx);
+        $this->provider->set_language($lang);
 
 		if (version_compare(PHP_VERSION, '5.3.7', '<'))
 		{

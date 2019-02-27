@@ -1,5 +1,7 @@
 # Remote User Authentication
 
+![travis badge](https://travis-ci.com/cheshirekow/phpbb_remoteuser.svg?branch=master)
+
 The Remote User Authentication plugin for phpbb will authenticate users
 based on a username provided in a CGI variable. It is expected that this CGI
 variable is set by the server technology that is serving the forum.

@@ -24,6 +24,7 @@ branches:
   only:
     - master
     - stage
+    - /^dev\/.*$/
     - /^\d+(\.\d+)?\.x$/
 
 install:

@@ -1,5 +1,5 @@
 .gitattributes export-ignore
-.travis.yml export-eignore
+.travis.yml export-ignore
 .vscode export-ignore
 doc/nginx-fg.cfg export-ignore
 doc/php-fpm.conf export-ignore

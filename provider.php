@@ -2,11 +2,60 @@
 // Copyright 2019 Josh Bialkowski <josh.bialkowski@gmail.com>
 namespace cheshirekow\remoteuserauth;
 
+if (!defined('IN_PHPBB'))
+{
+   exit;
+}
+
+/**
+ * Generate a random string, using a cryptographically secure
+ * pseudorandom number generator (random_int)
+ *
+ * For PHP 7, random_int is a PHP core function
+ * For PHP 5.x, depends on https://github.com/paragonie/random_compat
+ *
+ * @param int $length      How many characters do we want?
+ * @param string $keyspace A string of all possible characters
+ *                         to select from
+ * @return string
+ * @see https://stackoverflow.com/a/31284266/141023
+ */
+function random_str(
+	$length, $keyspace =
+        '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+{
+	$str = '';
+	$max = mb_strlen($keyspace, '8bit') - 1;
+	if ($max < 1)
+	{
+		throw new Exception('$keyspace must be at least two characters long');
+	}
+	for ($i = 0; $i < $length; ++$i)
+	{
+		$str .= $keyspace[random_int(0, $max)];
+	}
+	return $str;
+}
+
 /**
  * RemoteUser authentication with database fallback provider for phpBB3
  */
 class provider extends \phpbb\auth\provider\db
 {
+    /**
+     * Reference to the language object
+     * @var \phpbb\language\language
+     */
+    protected $lang;
+
+    /**
+     * Assign the language object used for language binding lookups.
+     */
+    public function set_language(\phpbb\language\language $lang)
+    {
+        $this->lang = $lang;
+    }
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -21,14 +70,15 @@ class provider extends \phpbb\auth\provider\db
 		if (!$this->request->is_set($varname,
 			\phpbb\request\request_interface::SERVER))
 		{
-			return $this->user->lang['REMOTE_USER_SETUP_BEFORE_USE'];
+			return $this->lang->lang('REMOTE_USER_SETUP_BEFORE_USE');
 		}
 
 		$remoteuser = htmlspecialchars_decode(
 			$this->request->server($varname));
 		if ($this->user->data['username'] !== $remoteuser)
 		{
-			return sprintf($this->user->lang['REMOTE_USER_INVALID_USERNAME'],
+			return $this->lang->lang(
+				'REMOTE_USER_INVALID_USERNAME',
 				$remoteuser, $this->user->data['username']);
 		}
 		return false;
@@ -121,16 +171,7 @@ class provider extends \phpbb\auth\provider\db
 	 */
 	public function get_acp_template($new_config)
 	{
-		// NOTE(josh): this doesn't work
-		// $tplpath = $this->phpbb_root_path.
-		//     '/ext/cheshirekow/remoteuserauth' .
-		//     '/adm/style/auth_provider_remoteuser.html';
-		// NOTE(josh): $this->extension_manager is null
-		// $tplpath = $this->extension_manager->get_extension_path(
-		// 	'cheshirekow/remoteuserauth', true) .
-		// 	'adm/style/auth_provider_remoteuser.hml';
-		$tplpath = '../../ext/cheshirekow/remoteuserauth' .
-			'/adm/style/auth_provider_remoteuser.html';
+		$tplpath = '@cheshirekow_remoteuserauth/auth_provider_remoteuser.html';
 
 		return array(
 			'TEMPLATE_FILE' => $tplpath,
@@ -236,7 +277,7 @@ class provider extends \phpbb\auth\provider\db
 		// generate user account data
 		return array(
 			'username' => $username,
-			'user_password' => substr(md5(rand()), 0, 7),
+			'user_password' => random_str(16),
 			'user_email' => '',
 			'group_id' => (int) $row['group_id'],
 			'user_type' => USER_NORMAL,
@@ -259,7 +300,7 @@ class provider extends \phpbb\auth\provider\db
 		if ($this->request->is_set($varname,
 			\phpbb\request\request_interface::SERVER))
 		{
-			$remote_user = $this->request->server($varname);
+			$remote_user = trim($this->request->server($varname));
 			if ($remote_user)
 			{
 				// Server has provided a pre-auth username. Check that it
